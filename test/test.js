@@ -8,44 +8,91 @@ require("source-map-support").install();
 
 process.chdir(__dirname);
 
-describe("rollup-plugin-bibtex", function() {
-    it("converts bibtex", function() {
+describe("rollup-plugin-bibtex", () => {
+    it("converts bibtex", () => {
         return rollup
             .rollup({
-                input: "samples/main.js",
+                input: "samples/simple/main.js",
                 plugins: [bibtex()],
             })
             .then(bundle => bundle.generate({ format: "cjs" }))
             .then(generated => {
-                const fn = new Function("assert", generated.code);
+                // rollup@1.0/0.6x compatibility
+                const code = generated.output
+                    ? generated.output[0].code
+                    : generated.code;
+                const fn = new Function("assert", code);
                 fn(assert);
             });
     });
 
-    // it('converts yml', function() {
-    // 	return rollup
-    // 		.rollup({
-    // 			entry: 'samples/yml/main.js',
-    // 			plugins: [yaml()]
-    // 		})
-    // 		.then(executeBundle);
-    // });
+    it("generates named exports", () => {
+        return rollup
+            .rollup({
+                input: "samples/named/main.js",
+                plugins: [bibtex()],
+            })
+            .then(bundle => bundle.generate({ format: "cjs" }))
+            .then(generated => {
+                // rollup@1.0/0.6x compatibility
+                const code = generated.output
+                    ? generated.output[0].code
+                    : generated.code;
+                const exports = {};
+                const fn = new Function("exports", code);
+                fn(exports);
 
-    // it('generates named exports', function() {
-    // 	return rollup
-    // 		.rollup({
-    // 			entry: 'samples/named/main.js',
-    // 			plugins: [yaml()]
-    // 		})
-    // 		.then(executeBundle);
-    // });
+                assert(exports.adams2019);
+                assert.equal(
+                    code.indexOf("adams2018"),
+                    -1,
+                    "should exclude unused properties"
+                );
+            });
+    });
 
-    // it('resolves extensionless imports in conjunction with npm plugin', function() {
-    // 	return rollup
-    // 		.rollup({
-    // 			entry: 'samples/extensionless/main.js',
-    // 			plugins: [npm({ extensions: ['.js', '.yaml'] }), yaml()]
-    // 		})
-    // 		.then(executeBundle);
-    // });
+    it("resolves common extensions", () => {
+        return rollup
+            .rollup({
+                input: "samples/extensions/main.js",
+                plugins: [bibtex()],
+            })
+            .then(bundle => bundle.generate({ format: "cjs" }))
+            .then(generated => {
+                // rollup@1.0/0.6x compatibility
+                const code = generated.output
+                    ? generated.output[0].code
+                    : generated.code;
+                const exports = {};
+                const fn = new Function("exports", code);
+                fn(exports);
+
+                assert(exports.bib);
+                assert(exports.bibtex);
+                assert(exports.bibliography);
+            });
+    });
+
+    it("parses lots of real-world bibtex entries", () => {
+        return rollup
+            .rollup({
+                input: "samples/real-world/main.js",
+                plugins: [bibtex()],
+            })
+            .then(bundle => bundle.generate({ format: "cjs" }))
+            .then(generated => {
+                // rollup@1.0/0.6x compatibility
+                const code = generated.output
+                    ? generated.output[0].code
+                    : generated.code;
+                const exports = {};
+                const fn = new Function("exports", code);
+                fn(exports);
+
+                const exampleAuthor = /Hinton, Geoffrey E\.$/;
+
+                assert(exports.taylor);
+                assert(exampleAuthor.test(exports.taylor.Fields.author));
+            });
+    });
 });
