@@ -1,0 +1,38 @@
+{
+  "name": "rollup-plugin-bibtex",
+  "version": "1.0.0",
+  "description": "Import data from bibtex files",
+  "main": "dist/rollup-starter-plugin.cjs.js",
+  "module": "dist/rollup-starter-plugin.es.js",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "rollup",
+    "rollup-plugin"
+  ],
+  "homepage": "https://github.com/rollup/rollup-starter-plugin",
+  "author": "Kenji Okamoto",
+  "license": "MIT",
+  "repository": "rollup/rollup-starter-plugin",
+  "bugs": {
+    "url": "https://github.com/rollup/rollup-starter-plugin/issues"
+  },
+  "scripts": {
+    "prebuild": "rimraf -rf dist/*",
+    "build": "rollup -c",
+    "test": "mocha",
+    "pretest": "npm run build"
+  },
+  "dependencies": {
+    "rollup-pluginutils": "^2.8.1",
+    "bib2json": "0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.16.2",
+    "source-map-support": "^0.5.13",
+    "tosource": "^1.0.0"
+  }
+}
