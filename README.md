@@ -1,24 +1,49 @@
-# rollup-starter-plugin
+# rollup-plugin-bibtex
 
-This repo contains bare-bones code for creating a [Rollup plugin](https://rollupjs.org/guide/en/#plugins).
+Convert .bibtex files to ES6 modules:
 
-## Getting started
+```js
+// import a single property from a JSON file,
+// discarding the rest
+import { adams2019 } from "./bibliography.bib";
+console.log( `Author of this paper is ${adams2019.Fields.author}` );
 
-Clone this repository and install its dependencies:
-
-```bash
-npx degit https://github.com/rollup/rollup-starter-plugin my-plugin
-cd my-plugin
-npm install
+// import the whole file as an object
+import bibliography from './bibliography.bibtex';
+console.log( bibliography. );
 ```
 
-1. Edit `package.json`
+This package mereley wraps `bib2json` -- all parsing is done there.
 
-2. Edit `src/index.js`
-- rename the `starterPlugin` function
-- change `name: 'starter-plugin'` to your plugin name
-- implement or delete the function stubs. See [hooks guide](https://rollupjs.org/guide/en#hooks)
+## Installation
 
-3. Add your preferred test framework and implement tests
+_TODO: Not yet published on npm as of 2019-09-11._
 
-See [conventions](https://rollupjs.org/guide/en/#conventions) for writing Rollup plugins.
+```bash
+npm install --save-dev rollup-plugin-bibtex
+```
+
+
+## Usage
+
+```js
+// rollup.config.js
+import bibtex from 'rollup-plugin-bibtex';
+
+export default {
+  input: 'src/main.js',
+  output: {
+    file: 'dist/bundle.js',
+    format: 'iife'
+  },
+
+  plugins: [
+    bibtex()
+  ]
+};
+```
+
+
+## License
+
+MIT
