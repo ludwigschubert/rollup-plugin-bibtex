@@ -29,7 +29,7 @@
     "bib2json": "0.0.1"
   },
   "devDependencies": {
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "rimraf": "^2.6.3",
     "rollup": "^1.16.2",
     "source-map-support": "^0.5.13",
